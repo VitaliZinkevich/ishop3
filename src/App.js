@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+//import './App.css'
 import Shop from './components/Shop'
 let mock = require ('./mock.json')
 
@@ -10,12 +10,11 @@ class App extends Component {
     //mock = JSON.parse (mock) // не работает не хера
     return (
 
-        <div>
+        
           <Shop
           items={mock}
           />
-
-        </div>
+        
 
 
     );

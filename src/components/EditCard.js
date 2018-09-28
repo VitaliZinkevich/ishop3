@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+//import './EditCard.css'
+import Error from './Error'
 import validator from 'validator';
 
 class EditCard extends Component {
@@ -35,7 +37,7 @@ class EditCard extends Component {
   }
 
   cancelChange = ()=>{
-    this.setState ({item: this.props.item})
+    
     this.props.cancelEditing()
   }
 
@@ -49,27 +51,42 @@ class EditCard extends Component {
     name = name.trim().replace(/\s/g, "");
     if (!validator.isAlpha(name)){
       errors.push ('Название только латинецей и только буквы')
+    } else {
+      errors.push (null)
     }
 
     if (!validator.isInt(price.toString())){
       errors.push ('Цена только число')
+    }else {
+      errors.push (null)
     }
 
     if (!validator.isInt(left.toString())){
       errors.push ('Остаток только число')
+    }else {
+      errors.push (null)
     }
 
     fotos.forEach ((el)=>{
         if (!validator.isURL(el)) {
-        errors.push ('Ссылка на фото только URL')
+        errors.push ('Только URL')
+      }else {
+        errors.push (null)
       }
 
     })
-    console.log (errors)
-    console.log ((errors.length !== 0))
-    console.log (errors.length)
+    
+    let flag = true
 
-    if (errors.length === 0) {
+    errors.forEach ((el)=>{
+      if (el === null) {
+        
+      } else {
+        flag = false
+      }
+    })
+
+    if (flag === true) {
       let item = {...this.state.item}
 
       this.setState ({errors:[]})
@@ -80,11 +97,6 @@ class EditCard extends Component {
       this.setState ({errors: errors})
     }
 
-
-
-
-
-
   }
 
   render() {
@@ -93,27 +105,22 @@ class EditCard extends Component {
         return (
 
           <div key={ind} >
-          <p className='mb-0 pb-0'>Ссылка {ind+1}</p>
+          <p className=''>Ссылка {ind+1}</p>
           <input
           name={ind}
-          className='mb-1' value = {el}
+          className='' value = {el}
           onChange={this.handleFotos}
           />
+          {this.state.errors[3] == null ? null : (<Error message={this.state.errors[3]}/>)}
           </div>
         )
       })
-
-    const errorsView = this.state.errors.map ((el, ind) =>{
-      return (
-        <div className="alert alert-danger" role="alert">
-          {el}
-        </div>
-      )
-    })
+    
+   
 
     return (
 
-      <div className='my-5'>
+      <div className='w-75'>
       <h4>Редактировать {this.state.item.name}</h4>
       <div className="card" >
       <div className="card-body">
@@ -121,44 +128,51 @@ class EditCard extends Component {
 
           <div className="card-text">
 
-          <div><p className='mb-0 pb-0'> Имя</p>
+          <div><p className=''> Имя</p>
           <input
           key={this.state.ID}
-          className='mb-1' value = {this.state.item.name}
+          className='' value = {this.state.item.name}
           onChange={this.handleName}
           />
+
+         {this.state.errors[0] == null ? null : (<Error message={this.state.errors[0]}/>)} 
+
           </div>
 
-          <div><p className='mb-0 pb-0'>Цена</p>
-          <input className='mb-1' value = {this.state.item.price}
+          <div><p className=''>Цена</p>
+          <input className='' value = {this.state.item.price}
           onChange={this.handlePrice}
           />
+          {this.state.errors[1] == null ? null : (<Error message={this.state.errors[1]}/>)}
           </div>
 
-          <div><p className='mb-0 pb-0'>Остаток</p>
-          <input className='mb-1' value = {this.state.item.left}
+          <div><p className=''>Остаток</p>
+          <input className='' value = {this.state.item.left}
           onChange={this.handleLeft}
           />
+          {this.state.errors[2] == null ? null : (<Error message={this.state.errors[2]}/>)}
           </div>
 
-          <div><p className='mb-0 pb-0'><strong>Ссылки на фото</strong></p>
+          <div><p className=''><strong>Ссылки на фото</strong></p>
           {imgLinks}
+          
+          
           </div>
 
           </div>
 
           <button
-          className='btn btn-success mr-1'
+          className='btn btn-success '
           onClick={this.saveNewData}
           > Сохранить</button>
 
           <button
-          className='btn btn-danger mr-1'
+          className='btn btn-danger '
           onClick={this.cancelChange}
           >Отмена</button>
 
         </div>
-          {errorsView}
+         
       </div>
 
       </div>

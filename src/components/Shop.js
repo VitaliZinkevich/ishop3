@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+//import './Shop.css'
 
 import Table from './Table'
 import ItemCard from './ItemCard'
 import EditCard from './EditCard'
+import NewItem from './NewItem'
 
 class Shop extends Component {
 
@@ -21,7 +23,8 @@ class Shop extends Component {
   state = {items: this.props.items,
             selectedLineID:null,
             selectedItem:null,
-            editedItem:null
+            editedItem:null,
+            addingNewItem :false
           }
 
   handleClickonLine = (id)=>{
@@ -65,14 +68,14 @@ class Shop extends Component {
 
   }
 
-  editedItem = null
+  editedItem = null // не успевает обновляться стейт форма через свойство
 
   editItem = (id)=>{
 
     let elem = [...this.state.items].filter ((el)=>{
 
       if (el.ID === id) {
-            this.editedItem = el
+            this.editedItem = el // не успевает обновляться стейт форма через свойство
             return true
           } else {
             return false
@@ -86,11 +89,29 @@ class Shop extends Component {
     this.setState ({editedItem: null})
   }
 
-  setUpdateFromEdit = (item)=> {
-    alert ('save')
-    console.log (item)
+  setUpdateFromEdit = (updatedItem)=> {
 
-    // найти и заменить, снять режим редактирования
+    let newItems = [...this.state.items]
+    
+    newItems = newItems.map ((el, ind)=>{
+      if (el.ID === updatedItem.ID) {
+        el = updatedItem
+        return el
+       
+
+      } else {
+        return el
+      }
+    })
+
+    this.editedItem = updatedItem; // не успевает обновляться стейт форма через свойство
+    this.setState({items:newItems, editedItem: updatedItem})
+
+  }
+
+  addItem= () => {
+
+    this.setState({addingNewItem: true})
 
   }
 
@@ -111,8 +132,10 @@ class Shop extends Component {
 
     return (
 
-      <div className='container'>
-        <div className='row'>
+     
+        
+        <div className='row '>
+
           <div className='col-8'>
 
           <Table
@@ -123,20 +146,29 @@ class Shop extends Component {
            editItem={this.editItem}
            />
 
-           <button className='btn btn-primary'>Добавить товар</button>
+           <button 
+           onClick={this.addItem}
+           className='btn btn-primary mb-3'
+           
+           >Добавить товар</button>
            </div>
 
             <div className='col-4'>
             {(this.state.selectedLineID !== null) ? itemDetailes : null}
             {(this.state.editedItem !== null) ? itemEdit  : null}
             </div>
+            
+            <div className='row w-100'>
+            <div className='col-12' >
+            {(this.state.addingNewItem === true) ? <NewItem/> : null}
+            </div>
+            
+            </div>
         </div>
 
-        <div className='row'>
-        Тут добавление нового
-        </div>
+       
 
-       </div>
+       
 
 
     );

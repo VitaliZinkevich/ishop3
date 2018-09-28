@@ -6,9 +6,9 @@ class ItemCard extends Component {
 
     let el = this.props.selectedItem[0]
 
-    let imgs = el.fotos.map ((el)=>{
+    let imgs = el.fotos.map ((el, ind)=>{
       return (
-        <img
+        <img key={ind}
         src = {el}
         className="card-img-top"
         alt="Item foto"
@@ -19,7 +19,7 @@ class ItemCard extends Component {
 
     return (
 
-      <div className='my-5'>
+      <div className='w-75'>
       <h4>Детали товара {el.name}</h4>
       <div className="card" >
       <div className='d-flex flex-row'>
@@ -27,10 +27,10 @@ class ItemCard extends Component {
       </div>
         <div className="card-body">
           <h5 className="card-title">{el.name}</h5>
-          <p className="card-text">
+          <div className="card-text">
           <p>Цена {el.price + ' BYN'}</p>
           <p>Остаток {el.left + ' штук'}</p>
-          </p>
+          </div>
 
         </div>
       </div>
