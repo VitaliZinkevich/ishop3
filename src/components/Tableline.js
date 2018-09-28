@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 
 class Tableline extends Component {
 
-//1 нет смысла в отдельной проверке propTypes тк весь массив проверен на входе сразу на соотв форме.?
+  handleDeletion = (e)=>{
+    e.stopPropagation()
+    this.props.deleteItem(this.props.el.ID)
+  }
+
+  handleEdition = (e)=>{
+    e.stopPropagation()
+    this.props.editItem(this.props.el.ID)
+  }
+
 
   render() {
 
-
-//2 onClick организовано без работы с дом. Через дом все выглядит массивней, так как элементов события является ячейка и нужно обращаться к родителю за этим аттрибутом. Подобный механизм использован в документации react
 
     return (
         <tr align="center"
@@ -18,12 +25,17 @@ class Tableline extends Component {
                 <td className='align-middle'>{this.props.el.name}</td>
                 <td className='align-middle'>{this.props.el.price+ ' BYN'}</td>
                 <td className='align-middle'>{this.props.el.left}</td>
-                <td className='align-middle'>{this.props.el.fotos.map ((el, ind)=>{
+                <td className='align-middle d-flex flex-row'>{this.props.el.fotos.map ((el, ind)=>{
                   return (
-                    <img key={ind}  src={el} alt={'foto ' + ind + ' '} height="150" width="100" ></img>
+                    <img key={ind}  src={el} alt={'foto ' + ind + ' '} height="75" width="50" ></img>
         )
                 })}</td>
-                <td className='align-middle'><button onClick={()=>{this.props.deleteItem(this.props.el.ID)}}>Удалить</button></td>
+
+                <td className='align-middle'><button
+                onClick={this.handleEdition}
+                >Редактировать</button></td>
+
+                <td className='align-middle'><button onClick={this.handleDeletion}>Удалить</button></td>
                 </tr>
     );
   }
