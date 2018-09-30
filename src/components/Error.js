@@ -5,9 +5,9 @@ class Error extends Component {
   
     return (
 
-        <div className="alert alert-danger" role="alert">
+        <span className="alert alert-danger" role="alert">
              {this.props.message}           
-        </div>
+        </span>
 
 
     );

@@ -42,6 +42,8 @@ class Shop extends Component {
       this.setState ({selectedLineID: id, selectedItem: newSelectedItem, editedItem:null})
   }
 
+  editedItem = null // не успевает обновляться стейт форма через свойство
+
   deleteItem = (id)=>{
     //alert (id)
       let newItemList = [...this.state.items];
@@ -60,29 +62,32 @@ class Shop extends Component {
       })
 
       if (this.state.selectedLineID === id) {
-        this.setState ({items: newItemList, selectedLineID: null, selectedItem: null})
+        this.editedItem= null
+        this.setState ({items: newItemList, selectedLineID: null, selectedItem: null, editedItem: null}, ()=>{
+          this.editedItem = null
+        }) 
+        
       } else {
-        this.setState ({items: newItemList})
+        this.setState ({items: newItemList, editedItem: null}, ()=>{
+          this.editedItem = null})
       }
 
 
   }
 
-  editedItem = null // не успевает обновляться стейт форма через свойство
-
   editItem = (id)=>{
 
-    let elem = [...this.state.items].filter ((el)=>{
+        let elem = [...this.state.items].filter ((el)=>{
 
-      if (el.ID === id) {
-            this.editedItem = el // не успевает обновляться стейт форма через свойство
-            return true
-          } else {
-            return false
-          }
-        })
+          if (el.ID === id) {
+                this.editedItem = el // не успевает обновляться стейт форма через свойство
+                return true
+              } else {
+                return false
+              }
+            })
 
-    this.setState ({editedItem: elem, selectedLineID: null, selectedItem: null })
+        this.setState ({editedItem: elem, selectedLineID: null, selectedItem: null })
   }
 
   cancelEditing = () => {
@@ -113,6 +118,21 @@ class Shop extends Component {
 
     this.setState({addingNewItem: true})
 
+  }
+
+  cancelAdd = () =>{
+    this.setState({addingNewItem: false})
+  }
+
+  addNewItem = (item)=>{
+   
+    let newItems = [...this.state.items]
+    
+    let id = Math.floor (Math.random())
+    item.ID=id
+
+    newItems.push(item)
+    this.setState ({items: newItems,addingNewItem:false })
   }
 
   render() {
@@ -160,7 +180,11 @@ class Shop extends Component {
             
             <div className='row w-100'>
             <div className='col-12' >
-            {(this.state.addingNewItem === true) ? <NewItem/> : null}
+            {(this.state.addingNewItem === true) ? (
+            <NewItem
+             cancelAdd={this.cancelAdd}
+             addNewItem={this.addNewItem}
+             />) : null}
             </div>
             
             </div>

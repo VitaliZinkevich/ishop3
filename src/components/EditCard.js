@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 //import './EditCard.css'
 import Error from './Error'
+
+// удалить это или переписать только на импорт необходимых функций
 import validator from 'validator';
 
 class EditCard extends Component {
