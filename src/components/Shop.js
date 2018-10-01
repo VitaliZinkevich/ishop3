@@ -20,7 +20,7 @@ class Shop extends Component {
     })),
   }
 
-  state = {items: this.props.items,
+  state = {items: [...this.props.items],
             selectedLineID:null,
             selectedItem:null,
             editedItem:null,
@@ -72,17 +72,18 @@ class Shop extends Component {
 
   editItem = (id)=>{
 
-        let elem = [...this.state.items].filter ((el)=>{
-
+        let elem = [...this.state.items];
+        
+        let eElem = elem.filter ((el)=>{
+        
           if (el.ID === id) {
-                this.editedItem = el // не успевает обновляться стейт форма через свойство
                 return true
               } else {
                 return false
               }
             })
 
-        this.setState ({editedItem: elem, selectedLineID: null, selectedItem: null })
+        this.setState ({editedItem: eElem, selectedLineID: null, selectedItem: null })
   }
 
   cancelEditing = () => {
@@ -103,7 +104,7 @@ class Shop extends Component {
     })
 
     
-    this.setState({items:newItems, editedItem: null})
+    this.setState({items:newItems, editedItem: null}) // после сохранения можно не убирать
 
   }
 
@@ -121,9 +122,9 @@ class Shop extends Component {
    
     let newItems = [...this.state.items]
     
-    let id = Math.floor (Math.random())
+    let id = Math.floor (Math.random()*Math.pow(10,16))
     item.ID=id
-
+    
     newItems.push(item)
     this.setState ({items: newItems,addingNewItem:false })
   }

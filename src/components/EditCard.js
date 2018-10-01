@@ -20,7 +20,7 @@ class EditCard extends Component {
     }
 
   componentWillReceiveProps (props){
-      this.setState ({item: props.item})
+      this.setState ({item: {...props.item}})
     }
 
 
@@ -31,11 +31,11 @@ class EditCard extends Component {
 
 
     let newItemState = {...this.state.item}
-
-    console.log (newItemState)
-    
+    //console.log (newItemState === this.state.item) всегда false, те разные
     if (ind !== null) {
+      
       newItemState[key][ind] = value
+      
     } else {
       newItemState[key] = value
     }
@@ -111,7 +111,6 @@ class EditCard extends Component {
       if (flag.indexOf (false) === -1 ) {
         newErrors[3].status = false
         this.setState({errors : newErrors})
-
       } else {
         newErrors[3].status = true
         this.setState({errors : newErrors})
@@ -123,13 +122,13 @@ class EditCard extends Component {
           break;
     }
    
-  alert ('end validation')
+
   this.canEnableSaveButon()
 
   }
 
   canEnableSaveButon = ()=>{
-    alert ('canEnableSaveButon')
+    
     let errorArray = [...this.state.errors]
     let checkToEnableButton = errorArray.filter ((el)=>{
       return el.status === false
