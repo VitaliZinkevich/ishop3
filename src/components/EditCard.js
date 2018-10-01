@@ -55,29 +55,29 @@ class EditCard extends Component {
       case 'name':
       if (/^[a-zA-Z]+$/.test(value)) {
         newErrors[0].status = false
-        this.setState({errors : newErrors, blockSaveButton: false})
+        this.setState({errors : newErrors})
       } else {
         newErrors[0].status = true
-        this.setState({errors : newErrors, blockSaveButton:true})
+        this.setState({errors : newErrors})
       }
       break;
       case 'price':
       if (/^\d+$/.test(value)) {
         newErrors[1].status = false
-        this.setState({errors : newErrors, blockSaveButton: false})
+        this.setState({errors : newErrors})
       } else {
         newErrors[1].status = true
-        this.setState({errors : newErrors, blockSaveButton:true})
+        this.setState({errors : newErrors})
       }
           break;
       case 'left':
       if (/^\d+$/.test(value)) {
         newErrors[2].status = false
-        this.setState({errors : newErrors, blockSaveButton: false})
+        this.setState({errors : newErrors})
       } 
       else {
         newErrors[2].status = true
-        this.setState({errors : newErrors, blockSaveButton:true})
+        this.setState({errors : newErrors})
       }
           break;
       case 'fotos':
@@ -110,11 +110,11 @@ class EditCard extends Component {
 
       if (flag.indexOf (false) === -1 ) {
         newErrors[3].status = false
-        this.setState({errors : newErrors, blockSaveButton: false})
+        this.setState({errors : newErrors})
 
       } else {
         newErrors[3].status = true
-        this.setState({errors : newErrors, blockSaveButton: true})
+        this.setState({errors : newErrors})
       }
        
           break;
@@ -123,19 +123,22 @@ class EditCard extends Component {
           break;
     }
    
-  
+  alert ('end validation')
   this.canEnableSaveButon()
 
   }
 
   canEnableSaveButon = ()=>{
+    alert ('canEnableSaveButon')
     let errorArray = [...this.state.errors]
     let checkToEnableButton = errorArray.filter ((el)=>{
       return el.status === false
     })
     
     if (checkToEnableButton.length === 4) {
-      this.setState ({blockAddButton: false})
+      this.setState ({blockSaveButton: false})
+    } else {
+      this.setState ({blockSaveButton: true})
     }
     
   }
