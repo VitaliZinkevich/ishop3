@@ -95,17 +95,26 @@ validate = (name, value, ind=null) =>{
     let urlInputs = [...this.state.inputs.fotos]
     
     // переписать происходит сатанияб как то без такого кол ва смен стейта
-    urlInputs.forEach ((el)=>{
-      if ((is_url(el) === true) && (urlInputs.indexOf('') === -1)) {
+    let flag = []
+
+      urlInputs.forEach ((el)=>{
+        if ((is_url(el) === true)) {
+          flag.push (true)
+        } else {
+          flag.push (false)
+        }
+  
+      })
+
+      if (flag.indexOf (false) === -1 ) {
         newErrors[3].status = false
         this.setState({errors : newErrors})
+
       } else {
         newErrors[3].status = true
         this.setState({errors : newErrors})
-      }
-
-    })
-     
+      }  
+    
         break;
     default:
         // do nothing
@@ -124,6 +133,8 @@ canEnableSaveButon = ()=>{
   
   if (checkToEnableButton.length === 4) {
     this.setState ({blockAddButton: false})
+  } else {
+    this.setState ({blockAddButton: true})
   }
   
 }
@@ -151,41 +162,40 @@ canEnableSaveButon = ()=>{
             <div className="card-body d-flex flex-column">
 
             <h5 className="card-title">Заполните поля</h5>
-                <div className=''>
+                <div className='d-flex flex-column align-items-center'>
                 
-                <div className=' '>
-                <span className="card-text">Имя</span>
-                <input 
-                name='name'
-                onChange={(e)=>{this.handleChange(e)}} />
-                {(this.state.errors[0].status === true) ? (<Error
-                                          message={this.state.errors[0].message}/>): null}
-                </div>
+                      <div>
+                      <span className="card-text">Имя</span>
+                      <input 
+                      name='name'
+                      onChange={(e)=>{this.handleChange(e)}} />
+                      {(this.state.errors[0].status === true) ? (<Error
+                                                message={this.state.errors[0].message}/>): null}
+                      </div>
 
-                 <div className='mx-1 my-1'>
-                <span className="card-text">Цена</span>
-                <input 
-                name='price'
-                onChange={(e)=>{this.handleChange(e)}}/>
-                {(this.state.errors[1].status === true) ? (<Error
-                                          message={this.state.errors[1].message}/>): null}
-                </div>
+                      <div>
+                      <span className="card-text">Цена</span>
+                      <input 
+                      name='price'
+                      onChange={(e)=>{this.handleChange(e)}}/>
+                      {(this.state.errors[1].status === true) ? (<Error
+                                                message={this.state.errors[1].message}/>): null}
+                      </div>
 
-                <div className='d-flex'>
-                <span className="card-text">Остаток</span>
-                <input 
-                name='left'
-                onChange={(e)=>{this.handleChange(e)}}/>
-                {(this.state.errors[2].status === true) ? (<Error
-                                          message={this.state.errors[2].message}/>): null}
-                </div>
+                      <div>
+                      <span className="card-text">Остаток</span>
+                      <input 
+                      name='left'
+                      onChange={(e)=>{this.handleChange(e)}}/>
+                      {(this.state.errors[2].status === true) ? (<Error
+                                                message={this.state.errors[2].message}/>): null}
+                      </div>
 
                 </div>
                 
-                <div className=''>
+                <div className='d-flex flex-column align-items-center'>
                 
-
-                <div className='d-flex flex-row mx-2 mb-2'>
+                <div className='d-flex flex-row flex-wrap mx-2 mb-2'>
                 <span className="card-text">Фото</span>
 
                 {FOTOS_INPUTS}

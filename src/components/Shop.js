@@ -42,10 +42,10 @@ class Shop extends Component {
       this.setState ({selectedLineID: id, selectedItem: newSelectedItem, editedItem:null})
   }
 
-  editedItem = null // не успевает обновляться стейт форма через свойство
+
 
   deleteItem = (id)=>{
-    //alert (id)
+    
       let newItemList = [...this.state.items];
       newItemList = newItemList.filter ((el) => {
 
@@ -62,14 +62,9 @@ class Shop extends Component {
       })
 
       if (this.state.selectedLineID === id) {
-        this.editedItem= null
-        this.setState ({items: newItemList, selectedLineID: null, selectedItem: null, editedItem: null}, ()=>{
-          this.editedItem = null
-        }) 
-        
+        this.setState ({items: newItemList, selectedLineID: null, selectedItem: null, editedItem: null }) 
       } else {
-        this.setState ({items: newItemList, editedItem: null}, ()=>{
-          this.editedItem = null})
+        this.setState ({items: newItemList, editedItem: null})
       }
 
 
@@ -102,15 +97,13 @@ class Shop extends Component {
       if (el.ID === updatedItem.ID) {
         el = updatedItem
         return el
-       
-
       } else {
         return el
       }
     })
 
-    this.editedItem = updatedItem; // не успевает обновляться стейт форма через свойство
-    this.setState({items:newItems, editedItem: updatedItem})
+    
+    this.setState({items:newItems, editedItem: null})
 
   }
 
@@ -137,24 +130,9 @@ class Shop extends Component {
 
   render() {
 
-    const itemDetailes = <ItemCard
-    selectedItem ={this.state.selectedItem}
-
-    />
-
-    const itemEdit = <EditCard
-    item = {this.editedItem}
-    cancelEditing={this.cancelEditing}
-    setUpdateFromEdit={this.setUpdateFromEdit}
-    />
-
-
-
     return (
 
-     
-        
-        <div className='row '>
+        <div className='row'>
 
           <div className='col-8'>
 
@@ -166,25 +144,37 @@ class Shop extends Component {
            editItem={this.editItem}
            />
 
-           <button 
+          <button 
            onClick={this.addItem}
            className='btn btn-primary mb-3'
-           
-           >Добавить товар</button>
+          >Добавить товар</button>
+
            </div>
 
-            <div className='col-4'>
-            {(this.state.selectedLineID !== null) ? itemDetailes : null}
-            {(this.state.editedItem !== null) ? itemEdit  : null}
-            </div>
+        <div className='col-4'>
+
+            {(this.state.selectedLineID !== null) ? (
+            <ItemCard
+            selectedItem ={this.state.selectedItem}
+            />) : null}
+
+            {(this.state.editedItem !== null) ? (<EditCard
+              item = {{...this.state.editedItem[0]}}
+              cancelEditing={this.cancelEditing}
+              setUpdateFromEdit={this.setUpdateFromEdit}
+              />)  : null}
+
+        </div>
             
             <div className='row w-100'>
             <div className='col-12' >
+
             {(this.state.addingNewItem === true) ? (
             <NewItem
              cancelAdd={this.cancelAdd}
              addNewItem={this.addNewItem}
              />) : null}
+
             </div>
             
             </div>

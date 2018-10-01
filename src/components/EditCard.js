@@ -1,120 +1,169 @@
 import React, { Component } from 'react';
-//import './EditCard.css'
+
 import Error from './Error'
 
-// удалить это или переписать только на импорт необходимых функций
-import validator from 'validator';
 
 class EditCard extends Component {
 
   constructor(props) {
       super(props);
-      this.state = {item: {...props.item}, errors:[]};
+      this.state = {
+      item: {...props.item}, 
+      errors:[
+      {message: 'Только латиница ,текст, без пробелов', status: false},
+      {message: 'Только  цифры', status: false},
+      {message: 'Только  цифры', status: false},
+      {message: 'Только URLы', status: false}],
+      blockSaveButton: false,
+    };
 
     }
 
-    componentWillReceiveProps (props){
+  componentWillReceiveProps (props){
       this.setState ({item: props.item})
     }
 
 
+  handleAllInputs = (e, ind=null)=>{
 
-  handleName = (e) =>{
+    let key = e.target.name;
+    let value = e.target.value;
 
-    this.setState ({item: {...this.state.item, name:e.target.value}})
+
+    let newItemState = {...this.state.item}
+
+    console.log (newItemState)
+    
+    if (ind !== null) {
+      newItemState[key][ind] = value
+    } else {
+      newItemState[key] = value
+    }
+
+    this.setState ({item: newItemState}, ()=>{
+
+      this.validate (key, value, ind=null)
+    })
+        
   }
 
-  handlePrice = (e) =>{
-    this.setState ({item: {...this.state.item, price:e.target.value}})
+  validate = (key, value, ind) =>{
+
+    let newErrors = [...this.state.errors]
+  
+    switch (key) {
+      case 'name':
+      if (/^[a-zA-Z]+$/.test(value)) {
+        newErrors[0].status = false
+        this.setState({errors : newErrors, blockSaveButton: false})
+      } else {
+        newErrors[0].status = true
+        this.setState({errors : newErrors, blockSaveButton:true})
+      }
+      break;
+      case 'price':
+      if (/^\d+$/.test(value)) {
+        newErrors[1].status = false
+        this.setState({errors : newErrors, blockSaveButton: false})
+      } else {
+        newErrors[1].status = true
+        this.setState({errors : newErrors, blockSaveButton:true})
+      }
+          break;
+      case 'left':
+      if (/^\d+$/.test(value)) {
+        newErrors[2].status = false
+        this.setState({errors : newErrors, blockSaveButton: false})
+      } 
+      else {
+        newErrors[2].status = true
+        this.setState({errors : newErrors, blockSaveButton:true})
+      }
+          break;
+      case 'fotos':
+  
+      function is_url(str)
+        {
+          let regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+                if (regexp.test(str))
+                {
+                  return true;
+                }
+                else
+                {
+                  return false;
+                }
+        }
+  
+      let urlInputs = [...this.state.item.fotos]
+      
+      let flag = []
+
+      urlInputs.forEach ((el)=>{
+        if ((is_url(el) === true)) {
+          flag.push (true)
+        } else {
+          flag.push (false)
+        }
+  
+      })
+
+      if (flag.indexOf (false) === -1 ) {
+        newErrors[3].status = false
+        this.setState({errors : newErrors, blockSaveButton: false})
+
+      } else {
+        newErrors[3].status = true
+        this.setState({errors : newErrors, blockSaveButton: true})
+      }
+       
+          break;
+      default:
+          // do nothing
+          break;
+    }
+   
+  
+  this.canEnableSaveButon()
+
   }
 
-  handleLeft = (e) =>{
-    this.setState ({item: {...this.state.item, left:e.target.value}})
-  }
-
-  handleFotos = (e) =>{
-        let newLinkInFotos = [...this.state.item.fotos]
-        newLinkInFotos[e.target.name] = e.target.value
-        this.setState ({item: {...this.state.item, fotos: newLinkInFotos}})
+  canEnableSaveButon = ()=>{
+    let errorArray = [...this.state.errors]
+    let checkToEnableButton = errorArray.filter ((el)=>{
+      return el.status === false
+    })
+    
+    if (checkToEnableButton.length === 4) {
+      this.setState ({blockAddButton: false})
+    }
+    
   }
 
   cancelChange = ()=>{
-    
     this.props.cancelEditing()
   }
 
   saveNewData= ()=>{
-
-    let {name , price, left, fotos} = this.state.item
-
-    let errors = []
-//сообщения об ошибках отображаются возле неправильно заполненных полей.
-
-    name = name.trim().replace(/\s/g, "");
-    if (!validator.isAlpha(name)){
-      errors.push ('Название только латинецей и только буквы')
-    } else {
-      errors.push (null)
-    }
-
-    if (!validator.isInt(price.toString())){
-      errors.push ('Цена только число')
-    }else {
-      errors.push (null)
-    }
-
-    if (!validator.isInt(left.toString())){
-      errors.push ('Остаток только число')
-    }else {
-      errors.push (null)
-    }
-
-    fotos.forEach ((el)=>{
-        if (!validator.isURL(el)) {
-        errors.push ('Только URL')
-      }else {
-        errors.push (null)
-      }
-
-    })
-    
-    let flag = true
-
-    errors.forEach ((el)=>{
-      if (el === null) {
-        
-      } else {
-        flag = false
-      }
-    })
-
-    if (flag === true) {
-      let item = {...this.state.item}
-
-      this.setState ({errors:[]})
-
-      this.props.setUpdateFromEdit (item)
-
-    } else {
-      this.setState ({errors: errors})
-    }
-
+    let newItem = {...this.state.item}
+ 
+    this.props.setUpdateFromEdit (newItem)
   }
+
 
   render() {
 
-    const imgLinks = this.state.item.fotos.map ((el, ind)=>{
+    const IMGLINKS = this.state.item.fotos.map ((el, ind)=>{
         return (
 
           <div key={ind} >
           <p className=''>Ссылка {ind+1}</p>
           <input
-          name={ind}
+          name='fotos'
           className='' value = {el}
-          onChange={this.handleFotos}
+          onChange={(e)=>{this.handleAllInputs(e, ind)}}
           />
-          {this.state.errors[3] == null ? null : (<Error message={this.state.errors[3]}/>)}
-          </div>
+         </div>
         )
       })
     
@@ -122,7 +171,7 @@ class EditCard extends Component {
 
     return (
 
-      <div className='w-75'>
+      <div className='w-75 mt-5'>
       <h4>Редактировать {this.state.item.name}</h4>
       <div className="card" >
       <div className="card-body">
@@ -132,33 +181,34 @@ class EditCard extends Component {
 
           <div><p className=''> Имя</p>
           <input
-          key={this.state.ID}
+          name='name'
           className='' value = {this.state.item.name}
-          onChange={this.handleName}
+          onChange={(e)=>{this.handleAllInputs(e)}}
+          
           />
 
-         {this.state.errors[0] == null ? null : (<Error message={this.state.errors[0]}/>)} 
+         {this.state.errors[0].status === false ? null : (<Error message={this.state.errors[0].message}/>)} 
 
           </div>
 
           <div><p className=''>Цена</p>
           <input className='' value = {this.state.item.price}
-          onChange={this.handlePrice}
+          name='price'
+          onChange={(e)=>{this.handleAllInputs(e)}}
           />
-          {this.state.errors[1] == null ? null : (<Error message={this.state.errors[1]}/>)}
+          {this.state.errors[1].status === false ? null : (<Error message={this.state.errors[1].message}/>)}
           </div>
 
           <div><p className=''>Остаток</p>
-          <input className='' value = {this.state.item.left}
-          onChange={this.handleLeft}
+          <input name='left' value = {this.state.item.left}
+          onChange={(e)=>{this.handleAllInputs(e)}}
           />
-          {this.state.errors[2] == null ? null : (<Error message={this.state.errors[2]}/>)}
+          {this.state.errors[2].status === false ? null : (<Error message={this.state.errors[2].message}/>)}
           </div>
 
           <div><p className=''><strong>Ссылки на фото</strong></p>
-          {imgLinks}
-          
-          
+          {IMGLINKS}
+          {this.state.errors[3].status === false ? null : (<Error message={this.state.errors[3].message}/>)}         
           </div>
 
           </div>
@@ -166,6 +216,7 @@ class EditCard extends Component {
           <button
           className='btn btn-success '
           onClick={this.saveNewData}
+          disabled={this.state.blockSaveButton}
           > Сохранить</button>
 
           <button

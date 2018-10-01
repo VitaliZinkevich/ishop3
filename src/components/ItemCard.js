@@ -19,7 +19,7 @@ class ItemCard extends Component {
 
     return (
 
-      <div className='w-75'>
+      <div className='w-75 mt-5'>
       <h4>Детали товара {el.name}</h4>
       <div className="card" >
       <div className='d-flex flex-row'>
